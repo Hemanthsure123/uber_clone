@@ -1,6 +1,8 @@
-// src/middlewares/role.middleware.js
-export const authorize = (...roles) => (req, res, next) => {
-  if (!roles.includes(req.user.role))
-    return res.sendStatus(403);
-  next();
+export const authorize = (...allowedRoles) => {
+  return (req, res, next) => {
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+    next();
+  };
 };

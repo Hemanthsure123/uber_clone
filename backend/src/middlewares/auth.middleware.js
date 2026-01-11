@@ -1,10 +1,16 @@
-// src/middlewares/auth.middleware.js
-import { verifyToken } from "../utils/jwt.util.js";
+import jwt from "jsonwebtoken";
 
 export const authenticate = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) return res.sendStatus(401);
+  const auth = req.headers.authorization;
+  if (!auth) return res.status(401).json({ error: "Token missing" });
 
-  req.user = verifyToken(token);
-  next();
+  const token = auth.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch {
+    return res.status(401).json({ error: "Invalid token" });
+  }
 };

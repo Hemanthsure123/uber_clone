@@ -1,22 +1,12 @@
-// src/config/mail.js
-import { SMTPClient } from "smtp-client";
+import nodemailer from "nodemailer";
 import env from "./env.js";
 
-export const createSmtpClient = async () => {
-  const client = new SMTPClient({
-    host: env.smtp.host,
-    port: env.smtp.port,
-    secure: false, // STARTTLS
-    timeout: 10000
-  });
-
-  await client.connect();
-  await client.greet({ hostname: "localhost" });
-
-  await client.authPlain({
-    username: env.smtp.user,
-    password: env.smtp.pass
-  });
-
-  return client;
-};
+export const mailTransporter = nodemailer.createTransport({
+  host: env.smtp.host,
+  port: env.smtp.port,
+  secure: true, // SSL
+  auth: {
+    user: env.smtp.user,
+    pass: env.smtp.pass
+  }
+});

@@ -1,8 +1,11 @@
-// src/utils/jwt.util.js
 import jwt from "jsonwebtoken";
 
-export const signToken = (payload) =>
-  jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "30m" });
+export const signToken = (payload, expiresIn = "1d") =>
+  jwt.sign(payload, process.env.JWT_SECRET, { expiresIn });
 
-export const verifyToken = (token) =>
-  jwt.verify(token, process.env.JWT_SECRET);
+export const signOnboardingToken = (userId) =>
+  jwt.sign(
+    { sub: userId, type: "ONBOARDING" },
+    process.env.JWT_SECRET,
+    { expiresIn: "15m" }
+  );
